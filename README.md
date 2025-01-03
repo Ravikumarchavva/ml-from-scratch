@@ -26,10 +26,10 @@ This repo will implements the most common machine learning algorithms from scrat
 
 ### Supervised Learning
 - [x] Linear Regression
-- [ ] Lasso Regression
-- [ ] Ridge Regression
-- [ ] Elastic Net Regression
-- [ ] Logistic Regression
+- [x] Lasso Regression
+- [x] Ridge Regression
+- [x] Elastic Net Regression
+- [x] Logistic Regression
 - [ ] Decision Trees
 - [ ] Random Forest
 - [ ] Gradient Boosting
@@ -58,24 +58,10 @@ This repo will implements the most common machine learning algorithms from scrat
 - [ ] Linear Discriminant Analysis
 - [ ] Gaussian Mixture Models
 - [ ] Hidden Markov Models
-- [ ] Self-Organizing Maps
 - [ ] t-SNE
-- [ ] UMAP
-- [ ] Isomap
-- [ ] Locally Linear Embedding
-- [ ] Laplacian Eigenmaps
-- [ ] Spectral Clustering
 - [ ] Agglomerative Clustering
-- [ ] Mean Shift
-- [ ] Affinity Propagation
-- [ ] Birch
-- [ ] OPTICS
 - [ ] HDBSCAN
 - [ ] Anomaly Detection
 - [ ] Isolation Forest
-- [ ] One-Class SVM
-- [ ] Local Outlier Factor
-- [ ] Elliptic Envelope
-- [ ] LOF
 
 

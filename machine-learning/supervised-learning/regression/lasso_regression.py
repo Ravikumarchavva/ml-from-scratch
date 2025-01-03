@@ -69,20 +69,20 @@ class LassoRegression(Model):
             y_pred = np.dot(X, self.weights) + self.bias
             error = y - y_pred
 
-            # calculate L1 regularization term
-            l1_regularization = self.l1_penalty * np.sign(self.weights)
-
             # calculate loss
-            loss = np.mean(np.square(error)) + np.sum(np.abs(l1_regularization))
+            loss = np.mean(np.square(error)) + np.sum(np.abs(self.weights)) * self.l1_penalty
             self.loss_history[i] = loss
 
+            # calculate L1 regularization derivative term
+            l1_regularization_derivative = self.l1_penalty * np.sign(self.weights)
+
             # calculate gradients
-            weights_gradient = -(2/len(X)) * np.dot(X.T, error) + l1_regularization
-            bias_gradient = -(2/len(X)) * np.sum(error)
+            dw = -(2/len(X)) * np.dot(X.T, error) + l1_regularization_derivative
+            db = -(2/len(X)) * np.sum(error)
 
             # update weights and bias
-            self.weights -= self.learning_rate * weights_gradient
-            self.bias -= self.learning_rate * bias_gradient
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
 
             if verbose > 0 and i % verbose == 0:
                 print(f"Iteration {i}: Loss = {loss:,.2f}")

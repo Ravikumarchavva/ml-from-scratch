@@ -4,14 +4,16 @@ sys.path.append('../../..')
 sys.path.append('../')
 from utils import WeightInitialization, Model
 
-class RidgeRegression(Model):
+class ElasticNetRegression(Model):
     '''
-    Ridge Regression model using Gradient Descent.
+    Elastic Net Regression model using Gradient Descent.
     Parameters:
         learning_rate: float, default=0.01
             The learning rate to update weights and bias.
         n_iterations: int, default=1000
             The number of iterations to train the model.
+        l1_penalty: float, default=0.01
+            The L1 regularization penalty.
         l2_penalty: float, default=0.01
             The L2 regularization penalty.
         initial_weights: str, default='normal'
@@ -32,14 +34,14 @@ class RidgeRegression(Model):
             Predict the target values
 
     Usage:
-        model = RidgeRegression(learning_rate=0.001, n_iterations=10000, l2_penalty=0.01, initial_weights='normal')
+        model = ElasticNetRegression(learning_rate=0.001, n_iterations=10000, l1_penalty=0.01, l2_penalty=0.01, initial_weights='normal')
 
         model.fit(X_train, y_train, verbose=2000)
 
         y_pred = model.predict(X_test)
 
     example output:
-        Run ```python ridge_regression.py``` locally to see the output.
+        Run ```python elasticnet_regression.py``` locally to see the output.
         Iteration 0: Loss = 253,411,693.81
         Iteration 2000: Loss = 10,215,214.35
         Iteration 4000: Loss = 6,461,558.45
@@ -48,9 +50,10 @@ class RidgeRegression(Model):
         Mean Squared Error: 6131574.338396628
         R2 Score: 0.8723105815527793
     '''
-    def __init__(self, learning_rate=0.01, n_iterations=1000, l2_penalty=0.01, initial_weights='normal'):
+    def __init__(self, learning_rate=0.01, n_iterations=1000, l1_penalty=0.01, l2_penalty=0.01, initial_weights='normal'):
         self.learning_rate = learning_rate
         self.n_iterations = n_iterations
+        self.l1_penalty = l1_penalty
         self.l2_penalty = l2_penalty
         self.initial_weights = WeightInitialization(initial_weights)
 
@@ -67,21 +70,22 @@ class RidgeRegression(Model):
 
         for i in range(self.n_iterations):
             # calculate predictions
-            y_pred = self.predict(X)
+            y_pred = np.dot(X, self.weights) + self.bias
 
             # calculate loss
-            loss = np.mean((y - y_pred) ** 2) + self.l2_penalty * np.sum(self.weights ** 2)
+            loss = np.mean((y - y_pred)**2) + self.l1_penalty * np.sum(np.abs(self.weights)) + self.l2_penalty * np.sum(self.weights ** 2)
             self.loss_history[i] = loss
 
-            # calculate regularization derivative term
+            # calculate regularization derivative terms
+            l1_regularization_derivative = self.l1_penalty * np.sign(self.weights)
             l2_regularization_derivative = 2 * self.l2_penalty * self.weights
 
             # calculate gradients
-            dw = -2 * np.dot(X.T, (y - y_pred)) + l2_regularization_derivative
-            db = -2 * np.sum(y - y_pred)
+            dW = (-2 * np.dot(X.T, (y - y_pred)) + l1_regularization_derivative + l2_regularization_derivative) / X.shape[0]
+            db = -2 * np.mean(y - y_pred)
 
             # update weights and bias
-            self.weights -= self.learning_rate * dw
+            self.weights -= self.learning_rate * dW
             self.bias -= self.learning_rate * db
 
             if verbose > 0 and i % verbose == 0:
@@ -127,10 +131,10 @@ if __name__ == '__main__':
     X_test = scaler.transform(X_test)
 
     # Train model with a reduced learning rate
-    model = RidgeRegression(learning_rate=0.001, n_iterations=10000, l2_penalty=0.01, initial_weights='normal')
+    model = ElasticNetRegression(learning_rate=0.001, n_iterations=10000, l1_penalty=0.01, l2_penalty=0.01, initial_weights='normal')
     model.fit(X_train, y_train, verbose=2000)
 
-    # Predict
+     # Predict
     y_pred = model.predict(X_test)
 
     # Evaluate

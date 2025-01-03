@@ -1,7 +1,7 @@
 import numpy as np
-from utils import WeightInitialization
+from utils import WeightInitialization, Model
 
-class LogisticRegression:
+class LogisticRegression(Model):
     '''
     Logistic Regression model using Gradient Descent.
     Parameters:

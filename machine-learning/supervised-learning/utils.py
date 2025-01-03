@@ -13,3 +13,14 @@ class WeightInitialization:
             return np.zeros(n_features)
         else:
             raise ValueError('Invalid method type. Use "normal", "random" or "zeros".')
+        
+from abc import ABC, abstractmethod
+
+class Model(ABC):
+    @abstractmethod
+    def fit(self, X, y):
+        pass
+
+    @abstractmethod
+    def predict(self, X):
+        pass

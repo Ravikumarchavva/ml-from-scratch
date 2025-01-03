@@ -1,7 +1,7 @@
 import numpy as np
-from utils import WeightInitialization
+from utils import WeightInitialization, Model
 
-class LinearRegression:
+class LinearRegression(Model):
     '''
     Linear Regression model using Gradient Descent.
     Parameters:

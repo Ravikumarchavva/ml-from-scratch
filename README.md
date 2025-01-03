@@ -25,7 +25,7 @@ This repo will implements the most common machine learning algorithms from scrat
 ## Algorithms
 
 ### Supervised Learning
-- [ ] Linear Regression
+- [x] Linear Regression
 - [ ] Lasso Regression
 - [ ] Ridge Regression
 - [ ] Elastic Net Regression

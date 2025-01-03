@@ -1,4 +1,7 @@
 import numpy as np
+import sys
+sys.path.append('../../..')
+sys.path.append('../')
 from utils import WeightInitialization, Model
 
 class LinearRegression(Model):
@@ -70,6 +73,9 @@ class LinearRegression(Model):
                 if i % verbose == 0:
                     print(f"Iteration {i}: Loss = {loss:,.2f}")
 
+        if verbose:
+            print(f"Iteration {self.n_iterations}: Loss = {loss:,.2f}")
+
     def predict(self, X):
         if not hasattr(self, 'weights'):
             raise ValueError("Model is not fitted yet. Call `fit` first.")
@@ -78,9 +84,6 @@ class LinearRegression(Model):
 if __name__ == '__main__':
     # Usage Example
     from sklearn.metrics import mean_squared_error, r2_score
-
-    import sys
-    sys.path.append('../..')
     from global_config import data_path
 
     train_data = data_path / 'car_price' / 'train_featureEngineered.csv'
@@ -117,8 +120,8 @@ if __name__ == '__main__':
     y_pred = model.predict(X_test)
 
     # Evaluate
-    print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
-    print("R2 Score:", r2_score(y_test, y_pred))
+    print("Test Mean Squared Error:", mean_squared_error(y_test, y_pred).__format__(",.2f"))
+    print("Test R2 Score:", r2_score(y_test, y_pred).__format__(",.2f"))
 
     # Plot loss history
     import plotly.express as px

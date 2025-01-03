@@ -1,4 +1,8 @@
 import numpy as np
+import sys
+sys.path.append('../')
+sys.path.append('../../..')
+
 from utils import WeightInitialization, Model
 
 class LogisticRegression(Model):
@@ -89,8 +93,6 @@ class LogisticRegression(Model):
 if __name__ == '__main__':
     # generate sklearn random data
     import pandas as pd
-    import sys
-    sys.path.append('../..')
     from global_config import data_path
 
     # Load data
@@ -126,4 +128,9 @@ if __name__ == '__main__':
     # calculate the accuracy
     accuracy = np.mean(y_pred == y_test)
     print(f"Accuracy: {accuracy}")
+
+    # plot loss
+    import plotly.express as px
+    fig = px.line(model.loss_history, title='loss_history')
+    fig.show()
     

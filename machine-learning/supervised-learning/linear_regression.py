@@ -51,6 +51,8 @@ class LinearRegression(Model):
     def fit(self, X, y, verbose=0):
         if X.ndim != 2:
             raise ValueError("X must be a 2D array.")
+        
+        y = np.array(y)
                 
         # initialize weights and bias
         self.weights = self.initial_weights.initialize(X.shape[1])
@@ -105,6 +107,10 @@ if __name__ == '__main__':
     # Prepare data
     X_train, y_train = train_data.drop(['price', 'car_ID'], axis=1), train_data['price']
     X_test, y_test = test_data.drop(['price', 'car_ID'], axis=1), test_data['price']
+
+    # Convert y_train and y_test to NumPy arrays
+    y_train = y_train.values
+    y_test = y_test.values
 
     # Implement Feature Scaling
     from sklearn.preprocessing import StandardScaler

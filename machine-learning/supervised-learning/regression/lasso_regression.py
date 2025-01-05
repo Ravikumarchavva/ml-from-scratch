@@ -1,8 +1,9 @@
 import numpy as np
 import sys
-sys.path.append('../../..')
 sys.path.append('../')
-from utils import WeightInitialization, Model
+sys.path.append('../../..')
+from global_utils import Model
+from utils import WeightInitialization
 
 class LassoRegression(Model):
     '''

@@ -14,22 +14,21 @@ class WeightInitialization:
         else:
             raise ValueError('Invalid method type. Use "normal", "random" or "zeros".')
         
-from abc import ABC, abstractmethod
 
-class Model(ABC):
-    '''
-    Abstract class for all models.
+import pandas as pd
+import polars as pl
 
-    Methods:
-        fit(X, y)
-            Fit the model to the training data.
-        predict(X)
-            Predict the target values
-    '''
-    @abstractmethod
-    def fit(self, X, y):
-        pass
-
-    @abstractmethod
-    def predict(self, X):
-        pass
+def check_purity(data, target_col):
+    """
+    Check if the data is pure.
+    """
+    if isinstance(target_col, str):
+        unique_classes = set(data[target_col])
+    elif isinstance(data, pl.DataFrame):
+        unique_classes = set(data[:,target_col])
+    elif isinstance(data, pd.DataFrame):
+        unique_classes = set(data.iloc[:, target_col])
+    if len(unique_classes) == 1:
+        return True
+    else:
+        return False

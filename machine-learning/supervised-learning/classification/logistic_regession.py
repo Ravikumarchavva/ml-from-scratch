@@ -2,8 +2,8 @@ import numpy as np
 import sys
 sys.path.append('../')
 sys.path.append('../../..')
-
-from utils import WeightInitialization, Model
+from global_utils import Model
+from utils import WeightInitialization
 
 class LogisticRegression(Model):
     '''
@@ -91,7 +91,6 @@ class LogisticRegression(Model):
         return -np.mean(y * np.log(y_pred) + (1 - y) * np.log(1 - y_pred))
     
 if __name__ == '__main__':
-    # generate sklearn random data
     import pandas as pd
     from global_config import data_path
 

@@ -56,10 +56,6 @@ class KNN(Model):
             most_common = Counter(nearest_labels).most_common(1)[0][0]
             y_pred.append(most_common)
 
-        print('Nearest Indices:', nearest_indices)
-        print('Nearest Labels:', nearest_labels)
-        print('Distances:', distances[nearest_indices])
-        print("Sorted Distances:", np.sort(distances)[:self.n_neighbors])
         return np.array(y_pred)
     
     def _calculate_distances(self, x):
@@ -82,12 +78,12 @@ class KNN(Model):
 
     def tune_k_plotly(self, X_val, y_val):
         from sklearn.metrics import accuracy_score
-        import numpy as np
         import plotly.express as px
 
-        k_values = range(1, 16)
+        k_values = range(1, 31)
         accuracies = []
-        for k in k_values:
+        from tqdm.auto import tqdm
+        for k in tqdm(k_values):
             self.n_neighbors = k
             y_pred = self.predict(X_val)
             accuracies.append(accuracy_score(y_val, y_pred))
@@ -95,12 +91,14 @@ class KNN(Model):
         fig = px.line(
             x=list(k_values),
             y=accuracies,
-            title="K vs Accuracy",
-            labels={"x": "K Value", "y": "Accuracy"}
+            title="Optimal K Value for KNN",
+            labels={"x": "Number of Neighbors (k)", "y": "Accuracy"}
         )
         fig.show()
         best_k = k_values[int(np.argmax(accuracies))]
         print("Best K:", best_k)
+        return best_k
+
 
 if __name__ == '__main__':
     import pandas as pd
@@ -129,7 +127,7 @@ if __name__ == '__main__':
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
     # Initialize and Train Model
-    model = KNN(n_neighbors=30, metric='euclidean', p=2)
+    model = KNN(n_neighbors=20, metric='euclidean', p=2)
     model.fit(X_train, y_train)
 
     # Make Predictions
@@ -142,34 +140,8 @@ if __name__ == '__main__':
     print('Predictions:', y_pred[:5])
     print('True Labels:', y_test[:5])
 
-    # # Tune K
-    # model.tune_k_plotly(X_test, y_test)
-
-    # # Plot Decision Boundary
-    # import matplotlib.pyplot as plt
-    # from matplotlib.colors import ListedColormap
-
-    # h = 0.02
-    # X = X_train
-    # y = y_train
-
-    # x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    # y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    # xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
-    #                      np.arange(y_min, y_max, h))
-    
-    # Z = model.predict(np.c_[xx.ravel(), yy.ravel()])
-
-    # Z = Z.reshape(xx.shape)
-    # plt.figure()
-    # plt.pcolormesh(xx, yy, Z, alpha=0.1)
-
-    # cmap_light = ListedColormap(['#FFAAAA', '#AAFFAA', '#AAAAFF'])
-    # cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF'])
-
-    # plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold, edgecolor='k', s=20)
-    # plt.xlim(xx.min(), xx.max())
-    # plt.ylim(yy.min(), yy.max())
-    # plt.title("3-Class classification (k = %i)" % (model.n_neighbors))
-
-    # plt.show()
+    # Tune K
+    best_k = model.tune_k_plotly(X_test, y_test)
+    model.n_neighbors = best_k
+    y_pred_best = model.predict(X_test)
+    print("Accuracy with best k:", accuracy_score(y_test, y_pred_best))
